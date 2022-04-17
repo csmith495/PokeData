@@ -14,4 +14,5 @@ interface PokeApi {
 
     @GET("v2/pokemon/{name}")
     fun getPokemon(@Path("name") name: String): Call<PokemonModel>
+
 }

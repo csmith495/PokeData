@@ -1,6 +1,7 @@
 package com.example.pokedata.api
 
 import android.util.Log
+import com.example.pokedata.PokemonListViewModel
 import com.example.pokedata.model.PokemonList
 import com.example.pokedata.model.PokemonListItem
 import com.example.pokedata.model.PokemonModel
@@ -24,7 +25,8 @@ class PokeFetcher {
         pokeApi = retrofit.create(PokeApi::class.java)
     }
 
-    fun getAllPokemon() {
+    // load all pokemon, call function with it
+    fun getAllPokemon(func: (input: List<PokemonListItem>) -> Unit) {
         val request: Call<PokemonList> = pokeApi.getAllPokemon()
         request.enqueue(object: Callback<PokemonList> {
             override fun onResponse(call: Call<PokemonList>, response: Response<PokemonList>) {
@@ -33,7 +35,7 @@ class PokeFetcher {
                 val pokemonList: PokemonList? = response.body()
                 val allPokemon: List<PokemonListItem>? = pokemonList?.results
                 if (allPokemon != null) {
-                    //allPokemon.forEach{ Log.d(TAG, it.name)}
+                    func(allPokemon)
                 }
             }
 
@@ -44,13 +46,17 @@ class PokeFetcher {
         })
     }
 
-    fun getPokemon(name: String) {
+    // load a single pokemon
+    fun getPokemon(name: String, func: (input: PokemonModel) -> Unit) {
         val request: Call<PokemonModel> = pokeApi.getPokemon(name)
         request.enqueue(object: Callback<PokemonModel>{
             override fun onResponse(call: Call<PokemonModel>, response: Response<PokemonModel>) {
                 Log.d(TAG, "Response Received: ${response.body().toString()}")
 
                 val pokemon: PokemonModel? = response.body()
+                if (pokemon != null) {
+                    func(pokemon)
+                }
             }
 
             override fun onFailure(call: Call<PokemonModel>, t: Throwable) {
@@ -58,4 +64,5 @@ class PokeFetcher {
             }
         })
     }
+
 }
