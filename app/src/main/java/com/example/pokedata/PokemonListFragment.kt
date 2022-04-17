@@ -31,6 +31,7 @@ class PokemonListFragment(pokemonListViewModel: PokemonListViewModel): Fragment(
 
         pokeListViewModel.pokemonLiveData.observe(viewLifecycleOwner, Observer { pokemonList ->
             listAdapter.setData(pokemonList)
+            recyclerView.scrollToPosition(0)
         })
 
         return view

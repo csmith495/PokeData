@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.pokedata.model.PokemonModel
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 
 // PokédexFragment shows the data of an individual pokemon
@@ -36,6 +38,15 @@ class PokedexFragment(pokedexViewModel: PokedexViewModel): Fragment() {
             val weight = pokemon.weight
             tvWeight.text = "Weight: $weight"
         })
+
+        view.findViewById<ImageButton>(R.id.btn_goBackJack).setOnClickListener {
+            try {
+                val activity = context as MainActivity
+                activity.gotoList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         return view
     }
