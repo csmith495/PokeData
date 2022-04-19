@@ -1,9 +1,9 @@
 package com.example.pokedata
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +11,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.pokedata.api.PokeFetcher
 import com.example.pokedata.model.PokemonListItem
-import com.example.pokedata.model.PokemonModel
-import com.squareup.picasso.Picasso
 import java.lang.Exception
-import java.net.URL
 import java.util.*
 
 
@@ -39,6 +37,7 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         // init
         val name = pokeList[position].name
         var itemView = holder.itemView
+        val activity = itemView.context as MainActivity
 
         // get views
         val tvName = itemView.findViewById<TextView>(R.id.li_name)
@@ -53,16 +52,15 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         pokeFetcher.getPokemon(name) { pokemon ->
 
             holder.itemView.setOnClickListener {
-                try {
-                    val activity = itemView.context as MainActivity
-                    activity.gotoPokedex(pokemon)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                activity.gotoPokedex(pokemon)
             }
 
             val sprURL = pokemon.sprites.frontDefault
-            Picasso.get().load(sprURL).into(pokemonImg)
+
+            Glide.with(itemView.context)
+                .asBitmap()
+                .load(sprURL).into(pokemonImg)
+
         }
 
     }

@@ -1,8 +1,10 @@
 package com.example.pokedata
 
-import androidx.lifecycle.LifecycleOwner
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.pokedata.api.PokeFetcher
 import com.example.pokedata.model.PokemonListItem
 

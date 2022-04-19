@@ -5,9 +5,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import com.example.pokedata.api.PokeFetcher
 import com.example.pokedata.model.PokemonModel
-import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +60,6 @@ class MainActivity : AppCompatActivity() {
         }
         pokedex.pokedexLiveData.value = pokemon
     }
-
 
 
 }
