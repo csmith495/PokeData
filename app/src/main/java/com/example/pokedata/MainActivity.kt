@@ -46,11 +46,8 @@ class MainActivity : AppCompatActivity() {
             gotoList()
             val searchText = searchTextInput.text
             if (searchText.isNotEmpty()) {
-                if (pokelistViewModel.pokemonLiveData.value != null) {
-                    val n = pokelistViewModel.pokemonLiveData.value!!.size
-                    Log.d("size", "$n")
-                }
                 pokelistViewModel.sortBySearchTerm(searchText.toString())
+                searchTextInput.text.clear()
             }
         }
 

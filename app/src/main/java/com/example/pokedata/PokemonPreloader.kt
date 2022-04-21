@@ -32,14 +32,17 @@ class PokemonPreloader(namesList: List<String>, val context: Context): Thread() 
                     // if there are pokemon left, retrieve them
                     val pokeFetcher = PokeFetcher()
                     val name = pokemonQueue.poll()
+                    // if you haven't already gotten it
                     if (modelBuffer[name] == null) {
                         busy = true
                         pokeFetcher.getPokemon(name)
                         { pokemonModel ->
+                            // preload the image
                             Glide.with(context)
                                 .load(pokemonModel.sprites.frontDefault)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .preload()
+                            // add it to the stored pokemon models
                             modelBuffer[name] = pokemonModel
                             setNotBusy = true
                         }
@@ -63,7 +66,7 @@ class PokemonPreloader(namesList: List<String>, val context: Context): Thread() 
     }
 
     companion object {
-        private const val DELAY_START_TIME: Long = 4000L
+        private const val DELAY_START_TIME: Long = 5000L
         private const val WAIT_TIME: Long = 1L
     }
 
