@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.example.pokedata.model.PokemonModel
 
 class MainActivity : AppCompatActivity() {
@@ -13,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var pokedex: PokedexViewModel
     private lateinit var pokelistFragment: PokemonListFragment
     private lateinit var pokedexFragment: PokedexFragment
+    private var pokemonPreloader: PokemonPreloader? = null
 
     private fun initMembers() {
         pokelistViewModel = PokemonListViewModel()
@@ -27,6 +29,14 @@ class MainActivity : AppCompatActivity() {
         initMembers()
 
         pokelistViewModel.loadAllPokemon()
+
+        pokelistViewModel.pokemonLiveData.observe(this, Observer { pokemonList ->
+            if (pokemonPreloader == null) {
+                val namesList: List<String> = pokemonList.map { it.name }
+                pokemonPreloader = PokemonPreloader(namesList, this)
+                pokemonPreloader!!.start()
+            }
+        })
 
         gotoList()
 
@@ -59,6 +69,20 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
         pokedex.pokedexLiveData.value = pokemon
+    }
+
+    fun getModel(name: String): PokemonModel? {
+        if (pokemonPreloader != null) {
+            Log.d("Num loaded", pokemonPreloader!!.modelBuffer.size.toString())
+            return pokemonPreloader!!.modelBuffer[name]
+        }
+        return null
+    }
+
+    fun addModel(name: String, model: PokemonModel) {
+        if (pokemonPreloader != null) {
+            pokemonPreloader!!.modelBuffer[name] = model
+        }
     }
 
 

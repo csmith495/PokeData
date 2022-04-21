@@ -1,9 +1,5 @@
 package com.example.pokedata
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pokedata.api.PokeFetcher
 import com.example.pokedata.model.PokemonListItem
-import java.lang.Exception
-import java.util.*
+import com.example.pokedata.model.PokemonModel
 
 
 class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
@@ -34,34 +29,43 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // init
         val name = pokeList[position].name
-        var itemView = holder.itemView
-        val activity = itemView.context as MainActivity
+        val mainActivity = holder.itemView.context as MainActivity
 
-        // get views
+        // set name early so there is no delay when showing this list item
+        holder.itemView.findViewById<TextView>(R.id.li_name).text = name
+
+        val recievedModel = mainActivity.getModel(name)
+        if (recievedModel != null) {
+            val pokemon = recievedModel!!
+            displayPokemonModel(pokemon, holder, mainActivity)
+        }
+        else {
+            val pokeFetcher = PokeFetcher()
+            pokeFetcher.getPokemon(name) { pokemon ->
+                displayPokemonModel(pokemon, holder, mainActivity)
+                mainActivity.addModel(name, pokemon)
+            }
+        }
+
+    }
+
+    private fun displayPokemonModel(pokemon: PokemonModel, holder: ViewHolder, mainActivity: MainActivity) {
+        val itemView = holder.itemView
         val tvName = itemView.findViewById<TextView>(R.id.li_name)
         val pokemonImg = itemView.findViewById<ImageView>(R.id.img_pokemon)
 
-        // ________________
-        // RecyclerView logic
+        tvName.text = pokemon.name
 
-        tvName.text = name
-
-        val pokeFetcher = PokeFetcher()
-        pokeFetcher.getPokemon(name) { pokemon ->
-
-            holder.itemView.setOnClickListener {
-                activity.gotoPokedex(pokemon)
-            }
-
-            val sprURL = pokemon.sprites.frontDefault
-
-            Glide.with(itemView.context)
-                .asBitmap()
-                .load(sprURL).into(pokemonImg)
-
+        holder.itemView.setOnClickListener {
+            mainActivity.gotoPokedex(pokemon)
         }
+
+        val sprURL = pokemon.sprites.frontDefault
+
+        Glide.with(itemView.context)
+            .asBitmap()
+            .load(sprURL).into(pokemonImg)
 
     }
 
