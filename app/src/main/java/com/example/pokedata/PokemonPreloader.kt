@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.pokedata.api.PokeFetcher
 import com.example.pokedata.model.PokemonModel
+import java.lang.Exception
 import java.util.Collections.synchronizedMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -35,15 +36,24 @@ class PokemonPreloader(namesList: List<String>, val context: Context): Thread() 
                     // if you haven't already gotten it
                     if (modelBuffer[name] == null) {
                         busy = true
-                        pokeFetcher.getPokemon(name)
-                        { pokemonModel ->
-                            // preload the image
-                            Glide.with(context)
-                                .load(pokemonModel.sprites.frontDefault)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .preload()
-                            // add it to the stored pokemon models
-                            modelBuffer[name] = pokemonModel
+                        Log.d("# pokemon left", pokemonQueue.size.toString())
+                        try {
+                            pokeFetcher.getPokemon(name,
+                            { pokemonModel ->
+                                // preload the image
+                                Glide.with(context)
+                                    .load(pokemonModel.sprites.frontDefault)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .preload()
+                                // add it to the stored pokemon models
+                                modelBuffer[name] = pokemonModel
+                                setNotBusy = true
+                            }, {
+                                setNotBusy = true
+                            })
+                        }
+                        catch (e: Exception) {
+                            e.printStackTrace()
                             setNotBusy = true
                         }
                     }
@@ -51,6 +61,7 @@ class PokemonPreloader(namesList: List<String>, val context: Context): Thread() 
                 else {
                     // if nothing else to do, exit the loop
                     running = false
+                    Log.d("Log", "Finished preloader running")
                 }
             }
             else if (setNotBusy) {

@@ -47,7 +47,10 @@ class PokeFetcher {
     }
 
     // load a single pokemon
-    fun getPokemon(name: String, func: (input: PokemonModel) -> Unit) {
+    fun getPokemon(name: String,
+                   onResponse: (input: PokemonModel) -> Unit,
+                   onFailure: () -> Unit) {
+        Log.d("Getting pokemon", name)
         val request: Call<PokemonModel> = pokeApi.getPokemon(name)
         request.enqueue(object: Callback<PokemonModel>{
             override fun onResponse(call: Call<PokemonModel>, response: Response<PokemonModel>) {
@@ -55,12 +58,13 @@ class PokeFetcher {
 
                 val pokemon: PokemonModel? = response.body()
                 if (pokemon != null) {
-                    func(pokemon)
+                    onResponse(pokemon)
                 }
             }
 
             override fun onFailure(call: Call<PokemonModel>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch pokemon data: ${t.message}")
+                onFailure()
             }
         })
     }

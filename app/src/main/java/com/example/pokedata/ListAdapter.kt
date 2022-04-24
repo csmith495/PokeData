@@ -42,10 +42,10 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         }
         else {
             val pokeFetcher = PokeFetcher()
-            pokeFetcher.getPokemon(name) { pokemon ->
+            pokeFetcher.getPokemon(name, { pokemon ->
                 displayPokemonModel(pokemon, holder, mainActivity)
                 mainActivity.addModel(name, pokemon)
-            }
+            }, {})
         }
 
     }
