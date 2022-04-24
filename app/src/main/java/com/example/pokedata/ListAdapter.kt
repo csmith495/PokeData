@@ -54,8 +54,18 @@ class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         val itemView = holder.itemView
         val tvName = itemView.findViewById<TextView>(R.id.li_name)
         val pokemonImg = itemView.findViewById<ImageView>(R.id.img_pokemon)
+        val miniStats = itemView.findViewById<TextView>(R.id.stats_pokemon)
 
         tvName.text = pokemon.name
+        val pokT = pokemon.types
+        val pt1 = pokT[0].type.name
+        if (pokT.size > 1){
+            val pt2 = pokT[1].type.name
+            miniStats.text = "Types: $pt1 and $pt2"
+        }
+        else{
+            miniStats.text = "Types: $pt1"
+        }
 
         holder.itemView.setOnClickListener {
             mainActivity.gotoPokedex(pokemon)

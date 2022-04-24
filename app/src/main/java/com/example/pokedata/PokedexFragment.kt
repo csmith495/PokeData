@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.pokedata.model.PokemonModel
+import com.example.pokedata.model.TypeXX
 import java.lang.Exception
 
 
@@ -31,6 +32,8 @@ class PokedexFragment(pokedexViewModel: PokedexViewModel): Fragment() {
             val tvName = requireView().findViewById<TextView>(R.id.tv_pokedexName)
             val tvWeight = requireView().findViewById<TextView>(R.id.tv_pokedexWeight)
             val pokemonImg = requireView().findViewById<ImageView>(R.id.img_pokedexPokemon)
+            val pokemonStats = requireView().findViewById<TextView>(R.id.textView2)
+
 
             val sprURL = pokemon.sprites.frontDefault
             Glide.with(requireContext())
@@ -39,7 +42,17 @@ class PokedexFragment(pokedexViewModel: PokedexViewModel): Fragment() {
 
             tvName.text = pokemon.name
             val weight = pokemon.weight
-            tvWeight.text = "Weight: $weight"
+            //tvWeight.text = "Weight: $weight"
+
+            val pokXp = pokemon.baseExperience
+            val pokHeight = pokemon.height
+            val pokT = pokemon.types
+            val pt1 = pokT[0].type.name
+            val pt2 = pokT[1].type.name
+            pokemonStats.text = "Height(CM): $pokHeight \n" +
+                    "Weight(G): $weight \n" +
+                    "Base XP: $pokXp \n" +
+                    "Types: $pt1 and $pt2"
 
         })
 
