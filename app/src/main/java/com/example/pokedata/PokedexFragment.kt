@@ -48,11 +48,20 @@ class PokedexFragment(pokedexViewModel: PokedexViewModel): Fragment() {
             val pokHeight = pokemon.height
             val pokT = pokemon.types
             val pt1 = pokT[0].type.name
-            val pt2 = pokT[1].type.name
-            pokemonStats.text = "Height(CM): $pokHeight \n" +
-                    "Weight(G): $weight \n" +
-                    "Base XP: $pokXp \n" +
-                    "Types: $pt1 and $pt2"
+            if (pokT.size > 1){
+                val pt2 = pokT[1].type.name
+                pokemonStats.text = "Height(CM): $pokHeight \n" +
+                        "Weight(G): $weight \n" +
+                        "Base XP: $pokXp \n" +
+                        "Types: $pt1 and $pt2"
+            }
+            else{
+                pokemonStats.text = "Height(CM): $pokHeight \n" +
+                        "Weight(G): $weight \n" +
+                        "Base XP: $pokXp \n" +
+                        "Types: $pt1"
+            }
+
 
         })
 
